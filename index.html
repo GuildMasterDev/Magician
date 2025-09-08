@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magician - Your Magical Journey</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1 class="app-title">✨ Magician</h1>
+            <p class="app-subtitle">Your Gateway to the Art of Magic</p>
+        </header>
+
+        <nav class="main-nav">
+            <button class="nav-btn active" data-section="organizations">Organizations</button>
+            <button class="nav-btn" data-section="books">Books</button>
+            <button class="nav-btn" data-section="kits">Starter Kits</button>
+            <button class="nav-btn" data-section="tricks">Basic Tricks</button>
+            <button class="nav-btn" data-section="tips">Tips & Advice</button>
+        </nav>
+
+        <main class="content-area">
+            <section id="organizations" class="content-section active">
+                <h2>Magic Organizations</h2>
+                <div class="cards-container" id="organizations-container"></div>
+            </section>
+
+            <section id="books" class="content-section">
+                <h2>Essential Books</h2>
+                <div class="cards-container" id="books-container"></div>
+            </section>
+
+            <section id="kits" class="content-section">
+                <h2>Starter Kits</h2>
+                <div class="cards-container" id="kits-container"></div>
+            </section>
+
+            <section id="tricks" class="content-section">
+                <h2>Basic Tricks to Learn</h2>
+                <div class="cards-container" id="tricks-container"></div>
+            </section>
+
+            <section id="tips" class="content-section">
+                <h2>Tips for Beginners</h2>
+                <div class="tips-container" id="tips-container"></div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Magician © 2024 | Begin Your Magical Journey Today</p>
+        </footer>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

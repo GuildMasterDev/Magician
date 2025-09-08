@@ -1,0 +1,15 @@
+{
+  "name": "me.davidcanhelp.magician",
+  "version": "1.0.0",
+  "description": "Magical resources app for beginners learning magic",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "author": "David",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0"
+  }
+}
