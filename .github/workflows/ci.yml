@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Syntax-check Electron app JS
+        run: |
+          node --check main.js
+          node --check preload.js
+          node --check renderer.js
+          node --check data.js
+
+      - name: Syntax-check web service worker
+        run: node --check web/sw.js
+
+      - name: Validate web manifest JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('web/manifest.json','utf8'))"
