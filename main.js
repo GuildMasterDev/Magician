@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, shell } = require('electron');
 const path = require('path');
 
 let mainWindow;
@@ -12,11 +12,17 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      sandbox: true
     }
   });
 
   mainWindow.loadFile('index.html');
+
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
 
   const menu = Menu.buildFromTemplate([
     {
@@ -35,11 +41,11 @@ function createWindow() {
       label: 'View',
       submenu: [
         { role: 'reload' },
-        { role: 'toggledevtools' },
+        { role: 'toggleDevTools' },
         { type: 'separator' },
-        { role: 'resetzoom' },
-        { role: 'zoomin' },
-        { role: 'zoomout' }
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' }
       ]
     }
   ]);
