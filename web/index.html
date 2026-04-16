@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Magician — a curated resource directory for aspiring magicians. Organizations, books, starter kits, tricks, and professional tips.">
+    <meta name="theme-color" content="#7c3aed">
+    <title>Magician — Your Magical Journey</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent: #ffd700;
+            --accent-2: #ffed4b;
+            --purple: #7c3aed;
+            --purple-2: #a855f7;
+            --bg-dark: #0a0a0f;
+            --text: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.75);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.14);
+            --glass-border: rgba(255, 255, 255, 0.18);
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background:
+                radial-gradient(ellipse at top left, rgba(124, 58, 237, 0.35), transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(168, 85, 247, 0.25), transparent 50%),
+                linear-gradient(135deg, #1e1e2e 0%, #2d1b69 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .app-header {
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 24px 20px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .app-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+        }
+
+        .app-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 9;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .search-wrap {
+            position: relative;
+            max-width: 640px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--purple-2);
+            background: var(--glass-hover);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 9px 18px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+        }
+
+        .nav-btn:hover {
+            background: var(--glass-hover);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+            box-shadow: 0 4px 14px rgba(118, 75, 162, 0.45);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 28px 20px 40px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .content-section h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 20px;
+            color: var(--accent);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .tips-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            max-width: 1100px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 22px;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+            background: var(--glass-hover);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .card .card-byline {
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            opacity: 0.85;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 10px;
+        }
+
+        .card .detail {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .card .detail strong {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card ul {
+            margin: 6px 0 10px 18px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .card ul li {
+            margin-bottom: 2px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .difficulty.beginner { background: #4caf50; }
+        .difficulty.intermediate { background: #ff9800; }
+        .difficulty.advanced { background: #f44336; }
+
+        .price {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: rgba(124, 58, 237, 0.18);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .card-link:hover {
+            background: rgba(124, 58, 237, 0.35);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .tip-item {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 4px solid var(--accent);
+            padding: 18px 22px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+        }
+
+        .tip-item:hover {
+            background: var(--glass-hover);
+            transform: translateX(3px);
+        }
+
+        .tip-item h3 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .tip-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state h3 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .app-footer {
+            padding: 20px 16px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid var(--glass-border);
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.85rem;
+        }
+
+        .app-footer a {
+            color: #c4b5fd;
+            text-decoration: none;
+        }
+
+        .app-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+        @media (max-width: 600px) {
+            .app-header { padding: 18px 16px 14px; }
+            .content-area { padding: 20px 14px 32px; }
+            .card { padding: 18px; }
+            .nav-btn { padding: 8px 14px; font-size: 13px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1 class="app-title">✨ Magician</h1>
+            <p class="app-subtitle">Your Gateway to the Art of Magic</p>
+        </header>
+
+        <div class="toolbar">
+            <div class="search-wrap">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="search" class="search-input" id="search" placeholder="Search organizations, books, kits, tricks, tips…" autocomplete="off" spellcheck="false">
+            </div>
+            <nav class="main-nav" id="main-nav">
+                <button class="nav-btn active" data-section="organizations">Organizations</button>
+                <button class="nav-btn" data-section="books">Books</button>
+                <button class="nav-btn" data-section="kits">Starter Kits</button>
+                <button class="nav-btn" data-section="tricks">Tricks</button>
+                <button class="nav-btn" data-section="tips">Tips</button>
+            </nav>
+        </div>
+
+        <main class="content-area">
+            <section id="organizations" class="content-section active" aria-label="Magic Organizations">
+                <h2>Magic Organizations</h2>
+                <div class="cards-container" id="organizations-container"></div>
+            </section>
+
+            <section id="books" class="content-section" aria-label="Essential Books">
+                <h2>Essential Books</h2>
+                <div class="cards-container" id="books-container"></div>
+            </section>
+
+            <section id="kits" class="content-section" aria-label="Starter Kits">
+                <h2>Starter Kits</h2>
+                <div class="cards-container" id="kits-container"></div>
+            </section>
+
+            <section id="tricks" class="content-section" aria-label="Basic Tricks">
+                <h2>Basic Tricks to Learn</h2>
+                <div class="cards-container" id="tricks-container"></div>
+            </section>
+
+            <section id="tips" class="content-section" aria-label="Tips for Beginners">
+                <h2>Tips for Beginners</h2>
+                <div class="tips-container" id="tips-container"></div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>Magician &copy; <span id="year"></span> &middot; <a href="https://github.com/GuildMasterDev/Magician" target="_blank" rel="noopener noreferrer">View on GitHub</a> &middot; Begin Your Magical Journey Today</p>
+        </footer>
+    </div>
+
+    <script>
+        const magicData = {
+            organizations: [
+                {
+                    name: "International Brotherhood of Magicians (IBM)",
+                    description: "The world's largest organization for magicians, with thousands of members worldwide. Perfect for beginners looking to connect with local magic communities.",
+                    website: "https://www.magician.org",
+                    membershipCost: "$65/year",
+                    benefits: ["Monthly Linking Ring magazine", "Local ring meetings", "Annual convention", "Ethics guidelines"]
+                },
+                {
+                    name: "Society of American Magicians (SAM)",
+                    description: "Founded in 1902, SAM is the oldest continuously active magical society in the world. Great for networking and learning from experienced performers.",
+                    website: "https://www.magicsam.com",
+                    membershipCost: "$75/year",
+                    benefits: ["M-U-M Magazine", "Local assembly meetings", "National convention", "Magic endowment fund"]
+                },
+                {
+                    name: "The Magic Circle",
+                    description: "A prestigious British magical society with a famous headquarters in London. Known for high standards and exclusive membership.",
+                    website: "https://themagiccircle.co.uk",
+                    membershipCost: "£150/year",
+                    benefits: ["Access to the clubhouse", "The Magic Circular magazine", "Library access", "Special events"]
+                },
+                {
+                    name: "Academy of Magical Arts (Magic Castle)",
+                    description: "Home of the world-famous Magic Castle in Hollywood. A dream destination for any magician.",
+                    website: "https://www.magiccastle.com",
+                    membershipCost: "$750/year",
+                    benefits: ["Magic Castle access", "Genii Magazine", "Special performances", "Networking opportunities"]
+                },
+                {
+                    name: "FISM — World Federation of Magic",
+                    description: "The international umbrella organization. Home of the prestigious FISM World Championships of Magic, held every three years.",
+                    website: "https://www.fism.org",
+                    membershipCost: "Via affiliated societies",
+                    benefits: ["World Championships", "International community", "Official magic competitions", "Federation standards"]
+                }
+            ],
+
+            books: [
+                {
+                    title: "The Royal Road to Card Magic",
+                    authors: "Jean Hugard & Frederick Braue",
+                    description: "The essential beginner's guide to card magic. Start here for a solid foundation in sleight of hand.",
+                    difficulty: "beginner",
+                    price: "$15-20",
+                    topics: ["Card handling", "Basic sleights", "Classic tricks", "Presentation"],
+                    link: "https://www.amazon.com/s?k=Royal+Road+to+Card+Magic+Hugard"
+                },
+                {
+                    title: "Mark Wilson's Complete Course in Magic",
+                    authors: "Mark Wilson",
+                    description: "A comprehensive encyclopedia covering all aspects of magic. Perfect for beginners who want to explore different types of magic.",
+                    difficulty: "beginner",
+                    price: "$25-35",
+                    topics: ["Cards", "Coins", "Ropes", "Mentalism", "Stage magic"],
+                    link: "https://www.amazon.com/s?k=Mark+Wilson+Complete+Course+in+Magic"
+                },
+                {
+                    title: "Modern Coin Magic",
+                    authors: "J.B. Bobo",
+                    description: "The bible of coin magic. Everything you need to know about performing miracles with coins.",
+                    difficulty: "intermediate",
+                    price: "$20-25",
+                    topics: ["Coin sleights", "Vanishes", "Productions", "Routines"],
+                    link: "https://www.amazon.com/s?k=Modern+Coin+Magic+Bobo"
+                },
+                {
+                    title: "Strong Magic",
+                    authors: "Darwin Ortiz",
+                    description: "Advanced theory on creating powerful magical experiences. Essential reading for serious students of the craft.",
+                    difficulty: "advanced",
+                    price: "$60-80",
+                    topics: ["Theory", "Psychology", "Showmanship", "Audience management"],
+                    link: "https://www.vanishingincmagic.com/magic-books/strong-magic/"
+                },
+                {
+                    title: "The Amateur Magician's Handbook",
+                    authors: "Henry Hay",
+                    description: "A classic introduction to magic with clear instructions and helpful illustrations.",
+                    difficulty: "beginner",
+                    price: "$12-18",
+                    topics: ["Basic principles", "Simple tricks", "Performance tips", "Practice advice"],
+                    link: "https://www.amazon.com/s?k=Amateur+Magicians+Handbook+Henry+Hay"
+                },
+                {
+                    title: "Card College (Volumes 1-5)",
+                    authors: "Roberto Giobbi",
+                    description: "The most respected modern course in card magic. A structured curriculum that has become the gold standard for learning sleight-of-hand with cards.",
+                    difficulty: "intermediate",
+                    price: "$40-50 per volume",
+                    topics: ["Systematic sleights", "Card routines", "Technique", "Theory"],
+                    link: "https://www.vanishingincmagic.com/magic-books/card-college/"
+                }
+            ],
+
+            kits: [
+                {
+                    name: "Melissa & Doug Magic in a Snap",
+                    description: "Perfect first magic set for absolute beginners. Includes easy tricks with special props.",
+                    difficulty: "beginner",
+                    price: "$20-30",
+                    contents: ["Magic wand", "Card tricks", "Rope tricks", "Instruction booklet"],
+                    ageRange: "8+",
+                    link: "https://www.melissaanddoug.com/search?q=magic+in+a+snap"
+                },
+                {
+                    name: "Marvin's Magic 365 Tricks",
+                    description: "A year's worth of magic tricks to learn. Great variety and good quality props.",
+                    difficulty: "beginner",
+                    price: "$40-50",
+                    contents: ["365 different tricks", "Props included", "Online tutorials", "Performance tips"],
+                    ageRange: "8+",
+                    link: "https://marvinsmagic.com/"
+                },
+                {
+                    name: "Ellusionist Starter Kit",
+                    description: "Professional-quality beginner set focusing on card magic. Includes premium Bicycle cards.",
+                    difficulty: "beginner",
+                    price: "$60-80",
+                    contents: ["Premium cards", "Online tutorials", "Gimmicks", "Performance rights"],
+                    ageRange: "13+",
+                    link: "https://www.ellusionist.com/"
+                },
+                {
+                    name: "Penn & Teller Magic Kit",
+                    description: "Learn tricks from the masters themselves. Includes exclusive content from P&T.",
+                    difficulty: "intermediate",
+                    price: "$30-40",
+                    contents: ["Signature tricks", "Video instructions", "Special props", "Performance advice"],
+                    ageRange: "12+",
+                    link: "https://www.amazon.com/s?k=Penn+and+Teller+magic+kit"
+                },
+                {
+                    name: "Vanishing Inc. Essentials Bundle",
+                    description: "A respected online magic shop's curated bundle of gimmicks and instructional videos for new magicians.",
+                    difficulty: "beginner",
+                    price: "$50-100",
+                    contents: ["Curated gimmicks", "HD video tutorials", "Community access", "Step-by-step routines"],
+                    ageRange: "12+",
+                    link: "https://www.vanishingincmagic.com/"
+                }
+            ],
+
+            tricks: [
+                {
+                    name: "The French Drop",
+                    category: "Coin Magic",
+                    description: "The fundamental coin vanish that every magician must master. One of the first sleights any coin worker learns.",
+                    difficulty: "beginner",
+                    requirements: "Any coin",
+                    learningTime: "1-2 weeks",
+                    link: "https://www.penguinmagic.com/s/?q=french+drop"
+                },
+                {
+                    name: "Double Lift",
+                    category: "Card Magic",
+                    description: "Show two cards as one. The most useful card sleight in magic, and the foundation for countless routines.",
+                    difficulty: "beginner",
+                    requirements: "Deck of cards",
+                    learningTime: "2-3 weeks",
+                    link: "https://www.penguinmagic.com/s/?q=double+lift"
+                },
+                {
+                    name: "Invisible Deck",
+                    category: "Mentalism",
+                    description: "A spectator names any card and it's the only reversed card in the deck. Instant reputation-maker.",
+                    difficulty: "beginner",
+                    requirements: "Special deck (~$15)",
+                    learningTime: "1 day",
+                    link: "https://www.penguinmagic.com/s/?q=invisible+deck"
+                },
+                {
+                    name: "Cups and Balls",
+                    category: "Classic Magic",
+                    description: "The oldest trick in magic, dating back thousands of years. Balls appear, vanish, and penetrate the cups.",
+                    difficulty: "intermediate",
+                    requirements: "3 cups, 4 balls",
+                    learningTime: "2-3 months",
+                    link: "https://www.vanishingincmagic.com/magic-tricks/cups-and-balls/"
+                },
+                {
+                    name: "Ambitious Card",
+                    category: "Card Magic",
+                    description: "A signed card repeatedly rises to the top of the deck. One of the most legendary routines in card magic.",
+                    difficulty: "intermediate",
+                    requirements: "Deck of cards",
+                    learningTime: "1 month",
+                    link: "https://www.penguinmagic.com/s/?q=ambitious+card"
+                },
+                {
+                    name: "Torn and Restored Napkin",
+                    category: "Close-up",
+                    description: "A napkin is torn into pieces and magically restored. A classic close-up effect using only a common prop.",
+                    difficulty: "beginner",
+                    requirements: "Two paper napkins",
+                    learningTime: "1-2 weeks",
+                    link: "https://www.penguinmagic.com/s/?q=torn+and+restored"
+                }
+            ],
+
+            tips: [
+                {
+                    title: "Practice in Front of a Mirror",
+                    content: "Always practice your tricks in front of a mirror to see what your audience sees. This helps catch flashing and improve your angles."
+                },
+                {
+                    title: "Never Reveal the Secret",
+                    content: "The magician's code is sacred. Never reveal how a trick is done, no matter how much someone begs. The mystery is what makes magic magical."
+                },
+                {
+                    title: "Start with Self-Working Tricks",
+                    content: "Begin with mathematical and self-working tricks to build confidence before moving to sleight of hand. Success builds motivation."
+                },
+                {
+                    title: "Develop Your Character",
+                    content: "Magic is more than tricks — it's about creating an experience. Develop your magical persona and presentation style."
+                },
+                {
+                    title: "Join a Local Magic Club",
+                    content: "Nothing accelerates learning like being around other magicians. Find your local IBM ring or SAM assembly."
+                },
+                {
+                    title: "Record Yourself Performing",
+                    content: "Video is the best teacher. Record your practice sessions and performances to identify areas for improvement."
+                },
+                {
+                    title: "Master a Few Tricks Well",
+                    content: "It's better to perform 5 tricks perfectly than 50 tricks poorly. Quality over quantity always."
+                },
+                {
+                    title: "Learn from Multiple Sources",
+                    content: "Books, videos, live performances, and mentors all offer different perspectives. Diversify your learning."
+                },
+                {
+                    title: "Respect Your Audience",
+                    content: "Never make fun of spectators or make them feel foolish. Magic should bring joy and wonder, not embarrassment."
+                },
+                {
+                    title: "Keep a Magic Journal",
+                    content: "Document your journey, trick ideas, performance notes, and audience reactions. This becomes invaluable over time."
+                }
+            ]
+        };
+
+        const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+
+        const externalLink = (url, label = 'Visit') => {
+            if (!url) return '';
+            return `<a class="card-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} →</a>`;
+        };
+
+        const templates = {
+            organizations: (org) => `
+                <h3>${esc(org.name)}</h3>
+                <p>${esc(org.description)}</p>
+                <p class="detail"><strong>Benefits:</strong></p>
+                <ul>${org.benefits.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
+                <div class="card-meta">
+                    <span class="price">${esc(org.membershipCost)}</span>
+                    ${externalLink(org.website, 'Website')}
+                </div>
+            `,
+            books: (book) => `
+                <h3>${esc(book.title)}</h3>
+                <p class="card-byline">by ${esc(book.authors)}</p>
+                <p>${esc(book.description)}</p>
+                <p class="detail"><strong>Topics:</strong> ${book.topics.map(esc).join(', ')}</p>
+                <div class="card-meta">
+                    <span class="difficulty ${esc(book.difficulty)}">${esc(book.difficulty)}</span>
+                    <span class="price">${esc(book.price)}</span>
+                    ${externalLink(book.link, 'Find')}
+                </div>
+            `,
+            kits: (kit) => `
+                <h3>${esc(kit.name)}</h3>
+                <p>${esc(kit.description)}</p>
+                <p class="detail"><strong>Age Range:</strong> ${esc(kit.ageRange)}</p>
+                <p class="detail"><strong>Contents:</strong></p>
+                <ul>${kit.contents.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
+                <div class="card-meta">
+                    <span class="difficulty ${esc(kit.difficulty)}">${esc(kit.difficulty)}</span>
+                    <span class="price">${esc(kit.price)}</span>
+                    ${externalLink(kit.link, 'Shop')}
+                </div>
+            `,
+            tricks: (trick) => `
+                <h3>${esc(trick.name)}</h3>
+                <p class="card-byline">${esc(trick.category)}</p>
+                <p>${esc(trick.description)}</p>
+                <p class="detail"><strong>Requirements:</strong> ${esc(trick.requirements)}</p>
+                <p class="detail"><strong>Learning Time:</strong> ${esc(trick.learningTime)}</p>
+                <div class="card-meta">
+                    <span class="difficulty ${esc(trick.difficulty)}">${esc(trick.difficulty)}</span>
+                    ${externalLink(trick.link, 'Learn')}
+                </div>
+            `
+        };
+
+        const searchIndex = {
+            organizations: (o) => [o.name, o.description, o.membershipCost, ...(o.benefits || [])].join(' ').toLowerCase(),
+            books: (b) => [b.title, b.authors, b.description, b.difficulty, ...(b.topics || [])].join(' ').toLowerCase(),
+            kits: (k) => [k.name, k.description, k.difficulty, k.ageRange, ...(k.contents || [])].join(' ').toLowerCase(),
+            tricks: (t) => [t.name, t.category, t.description, t.difficulty, t.requirements].join(' ').toLowerCase(),
+            tips: (t) => [t.title, t.content].join(' ').toLowerCase()
+        };
+
+        function render(section, query = '') {
+            const container = document.getElementById(section + '-container');
+            const q = query.trim().toLowerCase();
+            const items = magicData[section].filter((item) => !q || searchIndex[section](item).includes(q));
+
+            if (!items.length) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;"><h3>No matches</h3><p>Try a different search term.</p></div>';
+                return;
+            }
+
+            if (section === 'tips') {
+                container.innerHTML = items.map((tip) => `
+                    <div class="tip-item">
+                        <h3>${esc(tip.title)}</h3>
+                        <p>${esc(tip.content)}</p>
+                    </div>
+                `).join('');
+                return;
+            }
+
+            container.innerHTML = items.map((item) => `<article class="card">${templates[section](item)}</article>`).join('');
+        }
+
+        function renderAll(query = '') {
+            Object.keys(magicData).forEach((section) => render(section, query));
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.nav-btn').forEach((btn) => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+            document.querySelectorAll('.content-section').forEach((sec) => {
+                sec.classList.toggle('active', sec.id === section);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            renderAll();
+
+            document.getElementById('main-nav').addEventListener('click', (e) => {
+                const btn = e.target.closest('.nav-btn');
+                if (btn) showSection(btn.dataset.section);
+            });
+
+            const searchInput = document.getElementById('search');
+            let searchTimer;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimer);
+                const val = e.target.value;
+                searchTimer = setTimeout(() => {
+                    renderAll(val);
+                    if (val.trim()) {
+                        const sections = Object.keys(magicData);
+                        const active = document.querySelector('.content-section.active')?.id;
+                        const q = val.trim().toLowerCase();
+                        const activeHas = active && magicData[active].some((i) => searchIndex[active](i).includes(q));
+                        if (!activeHas) {
+                            const first = sections.find((s) => magicData[s].some((i) => searchIndex[s](i).includes(q)));
+                            if (first) showSection(first);
+                        }
+                    }
+                }, 120);
+            });
+        });
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
